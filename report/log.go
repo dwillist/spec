@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/sclevine/spec"
+	"github.com/dwillist/spec"
 )
 
 // Log reports specs via the testing log methods and only affects verbose runs.

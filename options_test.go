@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/sclevine/spec"
+	"github.com/dwillist/spec"
 )
 
 func optionTestSpec(t *testing.T, it spec.S, s recorder, name string) {

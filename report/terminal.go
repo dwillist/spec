@@ -5,7 +5,8 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/sclevine/spec"
+	"github.com/logrusorgru/aurora"
+	"github.com/dwillist/spec"
 )
 
 // Terminal reports specs via stdout.
@@ -32,7 +33,10 @@ func (Terminal) Specs(_ *testing.T, specs <-chan spec.Spec) {
 				fmt.Print("x")
 			} else {
 				if out, err := ioutil.ReadAll(s.Out); err == nil {
-					fmt.Printf("%s\n", out)
+					fmt.Println(">" + string(out)  + "<")
+					//fmt.Println(">" + err.Error()  + "<")
+					fmt.Print(aurora.Red(fmt.Sprintf("%s", out)))
+					//fmt.Print(aurora.Red(fmt.Sprintf("Failed: %d | ", failed)))
 				}
 			}
 		case s.Skipped:
@@ -47,5 +51,10 @@ func (Terminal) Specs(_ *testing.T, specs <-chan spec.Spec) {
 			}
 		}
 	}
-	fmt.Printf("\nPassed: %d | Failed: %d | Skipped: %d\n\n", passed, failed, skipped)
+	fmt.Println()
+	fmt.Print(aurora.Green(fmt.Sprintf("Passed: %d | ", passed)))
+	fmt.Print(aurora.Red(fmt.Sprintf("Failed: %d | ", failed)))
+	fmt.Print(aurora.Blue(fmt.Sprintf("Skipped: %d ", skipped)))
+	fmt.Println()
+	//fmt.Printf("\nPassed: %d | Failed: %d | Skipped: %d\n\n", passed, failed, skipped)
 }
