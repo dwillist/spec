@@ -2,15 +2,24 @@ package report
 
 import (
 	"fmt"
+	"github.com/dwillist/spec"
+	"github.com/logrusorgru/aurora"
 	"io/ioutil"
 	"testing"
-
-	"github.com/logrusorgru/aurora"
-	"github.com/dwillist/spec"
 )
 
 // Terminal reports specs via stdout.
 type Terminal struct{}
+
+type EchoReader struct {
+	string_arr []string
+}
+
+func (E EchoReader) Read(b []byte) (n int, err error){
+	str := "test_string! "
+	b = []byte(str)
+	return len(b), nil
+}
 
 func (Terminal) Start(_ *testing.T, plan spec.Plan) {
 	fmt.Println("Suite:", plan.Text)
@@ -26,6 +35,7 @@ func (Terminal) Start(_ *testing.T, plan spec.Plan) {
 func (Terminal) Specs(_ *testing.T, specs <-chan spec.Spec) {
 	var passed, failed, skipped int
 	for s := range specs {
+		s.Out = EchoReader{}
 		switch {
 		case s.Failed:
 			failed++
@@ -50,6 +60,17 @@ func (Terminal) Specs(_ *testing.T, specs <-chan spec.Spec) {
 				fmt.Print(".")
 			}
 		}
+		//fmt.Println("Printing Echo Reader output")
+		//original, ok := s.Out.(EchoReader)
+		//if ok {
+		//	for _, line := range original.string_arr {
+		//		if utf8.RuneCountInString(line) < 200 {
+		//			fmt.Println(line)
+		//		} else {
+		//			fmt.Println("Super long line consider splitting")
+		//		}
+		//	}
+		//}
 	}
 	fmt.Println()
 	fmt.Print(aurora.Green(fmt.Sprintf("Passed: %d | ", passed)))
